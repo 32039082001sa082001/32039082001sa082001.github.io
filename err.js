@@ -15,3 +15,20 @@ var ce=console.error;
 console.error=function(){
 sh('E:'+[].join.call(arguments,' ').slice(0,300));
 ce.apply(console,arguments)};
+var of=window.fetch;
+window.fetch=function(){
+var a=arguments;
+return of.apply(this,a).then(function(r){
+if(!r.ok)sh('F'+r.status+' '+String(a[0]).slice(-60));
+return r;
+},function(e){
+sh('FE '+e+' '+String(a[0]).slice(-50));
+throw e;
+});
+};
+if(navigator.mediaDevices&&navigator.mediaDevices.getUserMedia){
+var g=navigator.mediaDevices.getUserMedia.bind(navigator.mediaDevices);
+navigator.mediaDevices.getUserMedia=function(c){
+return g(c).catch(function(e){sh('MIC:'+e);throw e;});
+};
+}
